@@ -1,46 +1,70 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const sql = require('mssql/msnodesqlv8');
+const sql = require("mssql/msnodesqlv8");
 
 /* GET users listing. */
 
 const config = {
-    user: "shdAapp", // update me
-    password: "SuperSecret!", // update me
-    server: "tcp:smarthome-dashboard.database.windows.net", // update me
-    database: "smarthome-dashboard-db;",
-    driver: 'msnodesqlv8',
-    options : {
-        trustedConnection: false,
-        encrypted: true
-    }
+  user: "shdAapp", // update me
+  password: "SuperSecret!", // update me
+  server: "tcp:smarthome-dashboard.database.windows.net", // update me
+  database: "smarthome-dashboard-db;",
+  driver: "msnodesqlv8",
+  options: {
+    trustedConnection: false,
+    encrypted: true,
+  },
 };
 
-router.post("/", (req, res) => {
-    var roomName = req.body.roomName
-    var userID = req.body.userID
-    var url = req.body.url;
-    var connection = new sql.ConnectionPool(config, async function (err) {
-        try {
-            await connection.connect()
-            var r = new sql.Request(connection);
-            r.input('roomName', sql.VarChar, roomName);
-            r.input('userID', sql.Int, userID);
-            r.multiple = false;
-            r.query("insert Rooms(Name,UserID) values (@roomName, @userID)", function (err, recordsets) {
-                console.log("done")
-                connection.close();
-            });
-        } catch (error) {
-            console.log(error.message)
-        }
-
+router.get("/userId/", (req, res) => {
+  var connection = new sql.ConnectionPool(config, async function (err) {
+    await connection.connect().catch((err) => {
+      console.log(err);
+      return res.status(400).send(err);
     });
-    return res.status(200).send("Added")
+    var r = new sql.Request(connection);
+    r.input("user", sql.Int, req.query.userId);
+    var ret = await r
+      .query("SELECT * FROM Rooms WHERE UserID=@user")
+      .then((result) => {
+        console.log(result.recordsets);
+        return res.status(200).send(result.recordset);
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(400).send(err);
+      });
+
+    return res;
+  });
 });
 
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.post("/", (req, res) => {
+  var roomName = req.body.roomName;
+  var userID = req.body.userID;
+  var connection = new sql.ConnectionPool(config, async function (err) {
+    try {
+      await connection.connect();
+      var r = new sql.Request(connection);
+      r.input("roomName", sql.VarChar, roomName);
+      r.input("userID", sql.Int, userID);
+      r.multiple = false;
+      r.query(
+        "INSERT INTO Rooms(RoomName,UserID) VALUES (@roomName, @userID)",
+        function (err, recordsets) {
+          console.log("done");
+          connection.close();
+        }
+      );
+      res.status(200).end("Added");
+    } catch (error) {
+      throw error;
+    }
+  });
+});
+
+router.get("/", function (req, res, next) {
+  res.send("respond with a resource");
 });
 
 module.exports = router;

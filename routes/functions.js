@@ -16,45 +16,18 @@ const config = {
   },
 };
 
-router.post("/", (req, res) => {
-  var fName = req.body.fName;
-  var surname = req.body.surname;
-  var email = req.body.email;
-  var connection = new sql.ConnectionPool(config, async function (err) {
-    try {
-      await connection.connect();
-      var r = new sql.Request(connection);
-      r.input("fName", sql.VarChar, fName);
-      r.input("surname", sql.VarChar, surname);
-      r.input("email", sql.VarChar, email);
-      r.multiple = false;
-      r.query(
-        "insert Users(FirstName,Surname,Email) values (@fName, @surname, @email)",
-        function (err, recordsets) {
-          console.log("done");
-          connection.close();
-        }
-      );
-    } catch (error) {
-      console.log(error.message);
-      res.status(400).send(error.message);
-    }
-  });
-  return res.status(200).send("Added");
-});
-
-router.get("/id/", (req, res) => {
+router.get("/deviceId/", (req, res) => {
   var connection = new sql.ConnectionPool(config, async function (err) {
     await connection.connect().catch((err) => {
       console.log(err);
       return res.status(400).send(err);
     });
     var r = new sql.Request(connection);
-    r.input("user", sql.Int, req.query.userId);
+    r.input("device", sql.Int, req.query.deviceId);
     var ret = await r
-      .query("SELECT * FROM Users WHERE UserId=@user")
+      .query("SELECT * FROM DeviceFunctions WHERE DeviceID=@device")
       .then((result) => {
-        console.log(result.recordset);
+        console.log(result.recordsets);
         return res.status(200).send(result.recordset);
       })
       .catch((err) => {
@@ -64,6 +37,27 @@ router.get("/id/", (req, res) => {
 
     return res;
   });
+});
+
+router.post("/", async (req, res) => {
+  var functionName = req.body.functionName;
+  var parameter = req.body.parameter;
+  var deviceID = req.body.deviceID;
+  try {
+    var connection = new sql.ConnectionPool(config);
+    await connection.connect();
+    var r = new sql.Request(connection);
+    r.input("functionName", sql.VarChar, functionName);
+    r.input("parameter", sql.VarChar, parameter);
+    r.input("deviceID", sql.Int, deviceID);
+    r.multiple = false;
+    await r.query(
+      "insert DeviceFunctions(Name,Parameter, DeviceID) values (@functionName, @parameter, @deviceID)"
+    );
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+  return res.status(200).send("added");
 });
 
 router.get("/", function (req, res, next) {
