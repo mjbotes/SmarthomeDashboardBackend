@@ -1,24 +1,19 @@
 {
   "name": "smarthomedashboardbackend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mjbotes/SmarthomeDashboardBackend.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mjbotes/SmarthomeDashboardBackend/issues"
-  },
-  "homepage": "https://github.com/mjbotes/SmarthomeDashboardBackend#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "http": "*"
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "^1.8.0",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "msnodesqlv8": "^2.1.0",
+    "mssql": "^7.1.0",
+    "tedious": "^11.0.8"
   }
 }
