@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const sql = require('mssql/msnodesqlv8');
+const configA = require('./config');
 
 /* GET users listing. */
 
@@ -40,7 +41,7 @@ router.post("/", (req, res) => {
   return res.status(200).send("Added")
 });
 
-router.get("/id/", (req, res) => {
+router.get("/id/", loggedIn, (req, res) => {
   var connection = new sql.ConnectionPool(config, async function (err) {
     await connection.connect()
     var r = new sql.Request(connection);
@@ -57,8 +58,15 @@ router.get("/id/", (req, res) => {
   });
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', loggedIn ,function(req, res, next) {
   res.send('respond with a resource');
 });
 
+function loggedIn(req, res, next) {
+  if (req.cookies[configA.COOKIE_NAME]) {
+      next();
+  } else {
+      res.redirect(configA.SERVER_ROOT_URI+'/auth/google/url');
+  }
+}
 module.exports = router;

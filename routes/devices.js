@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const sql = require('mssql/msnodesqlv8');
-
+const configA = require('./config');
 /* GET users listing. */
 
 const config = {
@@ -39,8 +39,15 @@ router.post("/", (req, res) => {
     return res.status(200).send("Added")
 });
 
-router.get('/', function(req, res, next) {
+router.get('/',loggedIn, function(req, res, next) {
   res.send('respond with a resource');
 });
 
+function loggedIn(req, res, next) {
+    if (req.cookies[configA.COOKIE_NAME]) {
+        next();
+    } else {
+        res.redirect(configA.SERVER_ROOT_URI+'/auth/google/url');
+    }
+  }
 module.exports = router;
