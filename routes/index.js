@@ -5,10 +5,8 @@ const sql = require('mssql/msnodesqlv8');
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const axios= require("axios");
-const cors =require( "cors");
 const querystring =require("querystring");
 const cookieParser =require("cookie-parser");
-const config = require('./config');
 var router = express.Router();
 
 /* GET home page. */
@@ -18,17 +16,6 @@ router.get('/', function(req, res, next) {
 });
 
 module.exports = router;
-const PORT = process.env.PORT || 3001;
-
-
-router.use(
-  cors({
-    // Sets Access-Control-Allow-Origin to the UI URI
-    origin: config.UI_ROOT_URI,
-    // Sets Access-Control-Allow-Credentials to true
-    credentials: true,
-  })
-);
 
 router.use(cookieParser());
 

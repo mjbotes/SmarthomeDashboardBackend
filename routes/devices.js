@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const sql = require('mssql/msnodesqlv8');
-const configA = require('./config');
+const configA = require('../config');
 
 /* GET users listing. */
 
