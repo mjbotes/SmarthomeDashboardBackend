@@ -10,10 +10,7 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "^1.8.0",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1",
     "msnodesqlv8": "^2.1.0",
-    "mssql": "^7.1.0",
-    "tedious": "^11.0.8"
+    "mssql": "^7.1.0"
   }
 }
