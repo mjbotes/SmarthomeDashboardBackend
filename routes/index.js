@@ -9,6 +9,8 @@ const querystring =require("querystring");
 const cookieParser =require("cookie-parser");
 var router = express.Router();
 
+var config = require("../config");
+
 /* GET home page. */
 
 router.get('/', function(req, res, next) {
