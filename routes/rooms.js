@@ -39,7 +39,7 @@ router.post("/", (req, res) => {
     return res.status(200).send("Added")
 });
 
-router.get('/',  loggedIn,function(req, res, next) {
+router.get('/',loggedIn,function(req, res, next) {
   res.send('respond with a resource');
 });
 

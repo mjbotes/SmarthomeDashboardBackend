@@ -156,11 +156,6 @@ function loggedIn(req, res, next) {
     }
 }
 
-
-
-
-
-
 //For getting userId
 function getUserId(email){
   var connection = new sql.ConnectionPool(config, async function (err) {
@@ -195,7 +190,7 @@ function createUser(fName,surname,email){
       });
     } catch (error) {
       console.log(error.message)
-      res.status(400).send(error.message)
+    
     }
   });
   }
